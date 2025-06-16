@@ -182,22 +182,73 @@ def get_financial_advice(question):
 
 # ===== MAIN APP =====
 def main():
-    
-    
-    # Custom CSS
+    # Enhanced Custom CSS
     st.markdown("""
         <style>
-        .main { background-color: #f5f7fa; }
+        /* Global Styles */
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .main {
+            background: linear-gradient(to bottom right, #f0f4f8, #e0ecf7);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
         .title-style {
-            font-size: 40px;
-            font-weight: bold;
+            font-size: 45px;
+            font-weight: 800;
             text-align: center;
             color: #2c3e50;
+            padding: 20px 10px;
             margin-bottom: 30px;
+            background: -webkit-linear-gradient(#2c3e50, #3498db);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        /* Custom form sections */
+        .stForm {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+        /* Buttons */
+        button[kind="primary"] {
+            background-color: #3498db !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 8px !important;
+            padding: 0.5rem 1.2rem !important;
+            font-weight: 600 !important;
+        }
+        button[kind="primary"]:hover {
+            background-color: #2c80b4 !important;
+            transform: scale(1.03);
+            transition: 0.3s;
+        }
+        /* Tabs styling */
+        .stTabs [role="tablist"] {
+            background-color: #dfeeff;
+            border-radius: 10px;
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+        .stTabs [role="tab"] {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        /* DataFrame styling */
+        .stDataFrameContainer {
+            border-radius: 12px !important;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
         }
         </style>
     """, unsafe_allow_html=True)
-    
+
     st.markdown('<div class="title-style">💰 Smart Expense Tracker</div>', unsafe_allow_html=True)
 
     # === TRANSACTION INPUT ===
@@ -206,7 +257,6 @@ def main():
     
     with tab1:
         with st.form("expense_form"):
-            # Initialize with session state values if they exist
             amount = st.number_input(
                 "Amount (₹)", 
                 min_value=0.0, 
@@ -221,11 +271,9 @@ def main():
                     st.session_state.get("voice_category", "Food")
                 )
             )
-            
             if st.form_submit_button("Add Expense"):
                 add_expense(amount, category)
                 st.success(f"Added ₹{amount} expense")
-                # Clear the voice input values after submission
                 if "voice_amount" in st.session_state:
                     del st.session_state.voice_amount
                 if "voice_category" in st.session_state:
@@ -240,11 +288,8 @@ def main():
                 st.success(f"Added ₹{income_amt} income")
 
     # === VOICE INPUT ===
-    
-    # === VOICE INPUT ===
     if st.button("🎤 Start Voice Input"):
-        voice_input()  # No return values needed anymore
-    
+        voice_input()
     
     # === TRANSACTION MANAGEMENT ===
     with sqlite3.connect('expenses.db') as conn:
@@ -286,6 +331,7 @@ def main():
         with st.spinner("Analyzing..."):
             advice = get_financial_advice(question)
             st.write(advice)
+
 
 if __name__ == "__main__":
     main()
